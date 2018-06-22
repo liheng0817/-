@@ -1,0 +1,129 @@
+#!/bin/bash
+# auto：wanglu@anchnet
+# function:auto install lnmp
+# soft_version：Centos 6.9、openssl-fips-2.0.2、zlib-1.2.7、pcre-8.42、nginx-1.2.6。
+
+logfile="/var/log/lnmp_install.log"
+softdir="/software"
+installdir="/opt"
+sys_version=`cat /etc/redhat-release  | cut -d. -f1 | cut -d' ' -f3`
+clear
+
+echo "########################################"
+echo "#  Auto Install lnmp for centos6.9    ##"
+echo "#	 Press Ctrl + C to cancel 	        ##"
+echo "#	 Please choose		                  ##"
+echo "########################################"
+echo "(1) install nginx"
+echo "(2) install php"
+echo "(3) install mysql"
+echo "(4) install phpmyadmin"
+echo "(5) EXIT"
+read -p "Please input your choice:" NUM
+
+openssl_url="https://www.openssl.org/source/openssl-fips-2.0.16.tar.gz"
+zlib_url="http://www.zlib.net/zlib-1.2.11.tar.gz"
+pcre_url="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.42.tar.gz"
+nginx_url="http://nginx.org/download/nginx-1.15.0.tar.gz"
+php_url="http://cn2.php.net/get/php-7.2.6.tar.bz2/from/this/mirror"
+mysql_url="http://dev.mysql.com//Downloads/MySQL-5.7/mysql-5.7.11.tar.gz"
+boost="http://downloads.sourceforge.net/project/boost/boost/1.59.0/boost_1_59_0.tar.gz"
+
+
+
+
+sys_init() {
+[ -f /etc/init.d/functions ] && . /etc/init.d/functions
+[ ${sys_version} != "6" ] && echo "Please use centos6.x" && exit 1
+[ $(id -u) != "0" ] && echo "Error: You must be root to run this script" && exit 1
+sed -i "s/SELINUX=enforcing/SELINUX=disabled/"  /etc/selinux/config
+setenforce 0
+yum -y  install ncurses ncurses-devel cmake  gcc gcc-c++ wget openssl-devel curl-devel libxslt libxslt-devel  libjpeg libjpeg-devel libpng libpng-devel freetype freetype-devel libxml2 libxml2-devel mysql pcre-devel
+}
+
+
+
+download_software() {
+if [ ! -d ${softdir} ];then
+	mkdir ${softdir} && cd ${softdir}
+else
+	cd ${softdir}
+fi
+
+for  software_url in ${openssl_url} ${zlib_url} ${pcre_url} ${nginx_url} ${php_url} ${mysql_url} ${boost}
+do
+        wget -c ${software_url}
+	if [ $? -eq 0 ];then
+	for software in `ls`
+	do 
+		tar xf $software -C ${installdir}
+	done
+	fi
+done
+}
+
+install_nginx() {
+cd /opt/openssl-fips-2.0.16
+./config 
+make && make install 
+rm -fr  /opt/openssl-fips-2.0.16
+
+cd /opt/zlib-1.2.11
+./configure 
+make && make install 
+
+cd /opt/pcre-8.42
+
+./configure 
+make && make install 
+
+cd /opt/nginx-1.15.0
+./configure --prefix=/opt/nginx --with-pcre=/opt/pcre-8.42 --with-zlib=/opt/zlib-1.2.11 --with-openssl=/opt/openssl-fips-2.0.16 
+make && make install
+
+cd /opt/nginx/sbin/
+./nginx -t
+./nginx 
+netstat -anple | grep 80 
+if [ $? -eq 0 ];then
+echo "Nginx installation completion"
+fi
+}
+
+install_php() {
+mv  /opt/mirror /opt/php-7.2.6
+cd  /opt/php-7.2.6
+./configure --prefix=/opt/php --with-curl --with-freetype-dir --with-gd --with-gettext --with-iconv-dir --with-kerberos --with-libdir=lib64 --with-libxml-dir  --with-mysqli --with-openssl --with-pcre-regex --with-pdo-mysql --with-pdo-sqlite --with-pear --with-png-dir --with-xmlrpc --with-xsl --with-zlib --enable-fpm --enable-bcmath --enable-libxml --enable-inline-optimization  --enable-mbregex --enable-mbstring --enable-opcache --enable-pcntl --enable-shmop --enable-soap --enable-sockets --enable-sysvsem --enable-xml --enable-zip
+make && make install 
+cp /opt/php-7.2.6/sapi/fpm/php-fpm.conf /opt/php/etc/php-fpm.conf 
+cp /opt/php-7.2.6/php.ini-development /opt/php/lib/php.ini
+cp /opt/php/etc/php-fpm.d/www.conf.default  /opt/php/etc/php-fpm.d/www.conf
+cp /opt/php-7.2.6/sapi/fpm/php-fpm /etc/init.d/php-fpm
+/etc/init.d/php-fpm 
+if [ $? -eq 0 ];then
+echo "php 安装完成"
+fi
+}
+
+install_mysql() {
+groupadd mysql
+useradd -r -g mysql -s /bin/false mysql
+mkdir -p /data/mysql
+cd /opt/mysql-5.7.11
+cmake .  -DCMAKE_INSTALL_PREFIX=/opt/mysql  -DMYSQL_DATADIR=/data/mysql  -DDOWNLOAD_BOOST=1  -DWITH_BOOST=/opt/boost_1_59_0  -DSYSCONFDIR=/etc  -DWITH_INNOBASE_STORAGE_ENGINE=1  -DWITH_PARTITION_STORAGE_ENGINE=1  -DWITH_FEDERATED_STORAGE_ENGINE=1  -DWITH_BLACKHOLE_STORAGE_ENGINE=1  -DWITH_MYISAM_STORAGE_ENGINE=1  -DENABLED_LOCAL_INFILE=1  -DENABLE_DTRACE=0  -DDEFAULT_CHARSET=utf8mb4  -DDEFAULT_COLLATION=utf8mb4_general_ci  -DWITH_EMBEDDED_SERVER=1
+make && make install 
+cp /opt/mysql/support-files/mysql.server /etc/init.d/mysqld
+chmod +x /etc/init.d/mysqld
+chkconfig --add mysqld
+chkconfig mysqld on 
+}
+
+main() {
+sys_init
+download_software
+install_nginx
+install_php
+install_mysql
+}
+
+main 
