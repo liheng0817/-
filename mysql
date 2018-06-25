@@ -1,0 +1,87 @@
+#记录学习马哥MYSQL的相关SQL命令的用法。#
+
+
+
+1、mysql> SHOW　ENGINES;  #展示当前数据库可以支持的数据库引擎，Default 为默认使用的数据库引擎。
+
+2、mysql> use mysql;
+   mysql> help SHOW TABLE STATUS;  # show table status 为获取表的信息，help 是查看其使用方法。
+
+3、mysql> SHOW　TABLE STATUS LIKE 'user'; #查看mysql库中user表的信息
+   mysql> SHOW TABLE STATUS LIKE 'user';
+   +------+--------+---------+------------+------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+---------------------+------------+-----------+----------+----------------+-----------------------------+
+   | Name | Engine | Version | Row_format | Rows | Avg_row_length | Data_length | Max_data_length | Index_length | Data_free | Auto_increment | Create_time         | Update_time         | Check_time | Collation | Checksum | Create_options | Comment                     |
+   +------+--------+---------+------------+------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+---------------------+------------+-----------+----------+----------------+-----------------------------+
+   | user | MyISAM |      10 | Dynamic    |    2 |            132 |         264 | 281474976710655 |         4096 |         0 |           NULL | 2018-06-20 09:58:29 | 2018-06-20 11:46:40 | NULL       | utf8_bin  |     NULL |                | Users and global privileges |
+   +------+--------+---------+------------+------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+---------------------+------------+-----------+----------+----------------+-----------------------------+
+   1 row in set (0.01 sec)
+    
+ 4、shell# mysql --help --version  #查看mysql中my.cnf中支持的各种指令
+ 
+ 5、mysql> SHOW CHARACTER SET; #查看mysql支持的字符集
+ 
+ 6、mysql> SHOW COLLATION;  #显示字符集的排序规则
+ 
+ 7、mysql> SELECT LAST_INSERT_ID(); #查询上一次SQL执行结果
+ 
+ 8、AUTO_INCREMENT 
+    例子 mysql> CREATE TABLE test(ID UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,name CHAR(20)) #创建一个表，两个字段ID,name;ID字段是无符号自动增长非空主键。name字段是定长20
+
+MYSQL服务器变量：
+作用域：分为两类
+       全局变量
+       SHOW　GLOBAL VARIABLES
+       会话变量
+       SHOW [SESSION] VARIABLES
+ 9、mysql> SHOW GLOBAL VARIABLES LIKE 'sql_mode';  #查看当前支持的sql模型，global表示全局变量
+    mysql> SELECT @@global.sql_mode;               #不一样的表达式相同的结果
+ 
+ 10、服务器变量：@@变量名
+         显示：SELECT
+         设定：SET GLOBAL | SEEEION 变量名='value'
+ ########################################################################################@我是分界线@#####################################
+ 
+第二讲：
+   mysql> HELP CRATE TABLE | DATABASE #查看帮助信息
+   
+1、创建数据库：
+   mysql> CREATE DATABASE | SCHEMA [IF NOT EXISTS] db_name [CHARACTER SET=] [COLLATE=]
+   e.g:mysql> CREATE SCHEMA IF NOT EXISTS students CHARACTER SET 'gbk' COLLATE 'gdk-chinese-ci';
+2、删除数据库
+   mysql> DROP {DATABASE | SCHEMA} [IF EXISTS] db_name
+3、 表的创建：
+            1、直接定义一张空表
+            mysql> CREATE TABLE [IF NOT EXISTS] tb_name(col_name col_defination,...)
+            2、从其他表中查询出数据，并以之创建新表
+            mysql> CREATE TABLE testcourses SELECT * FROM courses WHERE CID <=2;
+            3、以其他表为模板创建一个空表
+            mysql> CREATE TABLE test LIKE courses;
+ 4、修改表定义：
+        ALTER TABLE
+        添加、删除、修改字段
+        添加、删除、修改索引
+        改表名
+        修改表属性
+ 5、删除表
+    mysql> DROP TABLE td_name;
+  
+ DML:
+     SELECT 
+     SELECT select-list FRPM tb WHERE qualification
+     查询语句类型:
+         简单查询
+         多表查询
+         子查询
+     SELECT * FROM tb_name 
+     SELECT field1,field2 FROM tb_name;投影
+     SELECT [DISTINCT] * FROM tb_name WHERE qualification; 选择
+     
+     FROM子句：要查询的关系        表、多个表、其他SELECT语句
+     WHERE子句：布尔关系表达式；=、>、>=、<=、<
+     
+     
+            
+ 
+ 
+ 
+ 
