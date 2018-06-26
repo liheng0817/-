@@ -102,8 +102,9 @@ MYSQL服务器变量：
    10、通过 SQL，您如何返回 "Persons" 表中记录的数目？
       myql> SELECT COUNT(*) FROM Persons
       
-      
+   
  
+ #mysql事物和隔离级别
  
  
  
