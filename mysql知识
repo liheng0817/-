@@ -102,9 +102,20 @@ MYSQL服务器变量：
    10、通过 SQL，您如何返回 "Persons" 表中记录的数目？
       myql> SELECT COUNT(*) FROM Persons
       
-   
- 
- #mysql事物和隔离级别
- 
- 
+   1、创建一个用户
+      mysql> create user username@host [identified by 'password'];
+   2、查看一个用户的授权信息
+      mysql> show grants for 'username@host';
+   3、授权命令
+      mysql> grant all privileges on db.* to username@'%';
+   4、删除一个用户
+      mysql> drop user username@'host';
+   5、重命名一个用户名
+      mysql> rename user old_name to new_name; 
+   6、取消用户授权信息
+      mysql>  revoke
+    7、数据库忘记root密码
+       请自行百度，简单的很的很~
+     
+      
  
