@@ -80,7 +80,29 @@ MYSQL服务器变量：
      WHERE子句：布尔关系表达式；=、>、>=、<=、<
      
      
-            
+   SQL测试语句：
+   1、通过 SQL，您如何从 "Persons" 表中选取 "FirstName" 列的值等于"Peter" 的所有记录？
+      mysql> SELECT * FROM Persons WHERE FirstName='Peter'
+   2、通过 SQL，您如何从 "Persons" 表中选取 "FirstName" 列的值以 "a" 开头的所有记录？
+      mysql> SELECT * FROM Persons WHERE FirstName LIKE 'a%'
+   3、通过 SQL，您如何在表 Persons 中选择 FirstName 等于 Thomas 而 LastName 等于 Carter 的所有记录？
+      mysql> SELECT * FROM Persons WHERE FirstName='Thomas' AND LastName='Carter'
+   4、通过 SQL，您如何按字母顺序选取 Persons 表中 LastName 介于 Adams 和 Carter 的所有记录？
+      mysql> SELECT * FROM Persons WHERE LastName BETWEEN 'Adams' AND 'Carter'
+   5、通过 SQL，您如何根据 "FirstName" 列降序地从 "Persons" 表返回所有记录？
+      mysql> SELECT * FROM Persons ORDER BY FirstName DESC
+   6、通过 SQL，您如何向 "Persons" 表插入新的记录？
+      mysql> INSERT INTO Persons VALUES ('Jimmy', 'Jackson')
+   7、通过 SQL，您如何向 "Persons" 表中的 "LastName" 列插入 "Wilson" ？
+      mysql> INSERT INTO Persons (LastName) VALUES ('Wilson')
+   8、您如何把 "Persons" 表中 "LastName" 列的 "Gates" 改为 "Wilson" ？
+      mysql> UPDATE Persons SET LastName='Wilson' WHERE LastName='Gates'
+   9、通过 SQL，您如何在 "Persons" 表中删除 "FirstName" 等于 "Fred" 的纪录？
+      mysql> DELETE FROM Persons WHERE FirstName = 'Fred'
+   10、通过 SQL，您如何返回 "Persons" 表中记录的数目？
+      myql> SELECT COUNT(*) FROM Persons
+      
+      
  
  
  
