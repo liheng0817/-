@@ -118,4 +118,49 @@ MYSQL服务器变量：
        请自行百度，简单的很的很~
      
       
- 
+ mysql日志分类：
+     错误日志  
+     一般查询日志
+     geneAral_log
+     general_log_file
+     log
+     log_output
+     慢查询日志
+     long_query_time
+     long_slow_queries={YES|NO}
+     slow_query_log
+     slow_query_log_file
+     二进制日志:任何引起或可能引起数据库变化的操作；用于实现mysql复制，即时点还原。
+     mysqlbinlog
+     二进制日志的格式
+        基于语句：statement
+        基于行：row
+        混合方式：mixed
+     二进制日志事件：
+        产生的时间
+        相对位置
+      二进制日志事件
+         产生的时间
+         相对位置
+      二进制日志文件
+         索引文件
+         二进制日志文件
+      查看当前正在使用的二进制日志文件
+      mysql> SHOW MASTER STATUS;
+      mysql> SHOW BINARY LOGS;
+      mysql> SHOW BINLOG EVENTS IN '二级制日志文件名' [from pos];
+      mysql> PURGE BINARY LOGS TO '某二进制日志文件'
+      
+      mysqlbinlog
+          --start-datetime
+          --stop-datetime
+          
+          --start-position
+          --stop-position
+          
+     中继日志
+     事务日志：ACID,将随机IO转换为顺序IO
+     
+     
+     
+
